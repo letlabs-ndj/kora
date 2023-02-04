@@ -1,0 +1,7 @@
+{
+    "type": ,
+    "air_humidity": "no",
+    "light_intensity": "2",
+    "sprinkler_status": false,
+    "fan_status": false
+}
