@@ -1,24 +1,21 @@
-import json
+import web
+import time
+from Controlleur import Controlleur
+from Reader import Reader
 
-class Reader(object):
-    instance = None
-    temperature = ""
-    air_humidity = ""
-    light_intensity =""
-    sprinkler_status = False
-    fan_status = False
+ctrl = Controlleur()
+reader = Reader("","","",False,False)
 
-    def __init__(self,temp,hum,light,spr,fan):
-        self.temperature = temp
-        self.air_humidity = hum
-        self.light_intensity = light
-        self.sprinkler_status = spr
-        self.fan_status = fan
 
-def updateGHState(state):
-        stateJson = json.dumps(state.__dict__,indent=4)  
-        with open("GHState.json","w") as state:
-            state.write(stateJson)
+while True:
+    web.getCommands()
+    start = time.time()
+    while (time.time()-start) <= 30:
+        ctrl.execute(reader)
 
-read = Reader("yes","no","2",False,False)
-updateGHState(read)
+        while (time.time()-start) <= 30:
+            reader.getReadings()
+            reader.updateGHState()
+            print(start-time.time(),"sec")
+
+        web.sendGHState()

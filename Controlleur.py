@@ -1,5 +1,16 @@
 import json
 import enum
+import RPi.GPIO as GPIO
+from gpiozero import LED
+
+GPIO.setwarnings(False)
+pinArro = 7
+pinVen = 18
+light = PMWLED(17)
+
+GPIO.setup(pinArro, GPIO.OUT)
+GPIO.setup(pinVen, GPIO.OUT)
+
 
 class Commands(enum.Enum):
     Arrosage = 'Arrosage'
@@ -12,38 +23,42 @@ class Controlleur(object):
 
     def __new__(cls, *args, **kargs):
         if cls.instance is None:
-            cls.instance = object.__new__(cls,*args,**kargs)
+            cls.instance = object.__new__(cls)
         return cls.instance
 
-    def execute(self,commande,reader):
-        cmd = json.loads(commande)
-        if cmd['type'] == Commands.Arrosage:
-            self.actionner(17,cmd['val'])            
-        elif cmd['type'] == Commands.Ventilation:
-            self.actionner(18,cmd['val'])
-        else:
-            self.ajusterLuminosite(cmd['val'])
+    def execute(self,reader):
+        with open("data/commands.json", "r") as cmds_file:
+            cmds = json.load(cmds_file)
 
-        self.updateReader(cmd['type'],reader,cmd['val'])
+        for cmd in cmds:
+            if cmd['type'] == Commands.Arrosage.value:
+                print('arro')
+                self.actionner(pinArro,cmd['val'])
+                reader.sprinkler_status = cmd['val']
+
+            elif cmd['type'] == Commands.Ventilation.value:
+                print('ven')
+                self.actionner(pinVen,cmd['val'])
+                reader.fan_status = cmd['val']
+
+            else:
+                self.ajusterLuminosite(cmd['val'])
+                print('lum')
+
+
 
     
 
-    def actionner(self,sensorPin,val):
+    def actionner(self,sensorPin,val):        
         if val:
             print('arrosage actif')
-            GPIO.output(sensorPin, val)
         else:
             print('arrosage non-actif')
-            GPIO.output(sensorPin, val)
+
+        GPIO.output(sensorPin, val)
 
       
     def ajusterLuminosite(self,val):
         light.value = val/100
                
-    
-    def updateReader(self,param,reader,val):
-        if param == Commands.Arrosage:
-            reader.sprinkler_status = val
-        elif param == Commands.Ventilation:
-            reader.fan_status = val
         

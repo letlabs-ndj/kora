@@ -7,17 +7,17 @@ import datetime
 import RPi.GPIO as GPIO
 import json
 
+ldr = 7
+dhtSensor = adafruit_dht.DHT11(board.D23)
+GPIO.setup(ldr, GPIO.OUT)
+GPIO.output(ldr, GPIO.LOW)
+
 class Reader(object):
-    instance = None
-    temperature = ""
-    air_humidity = ""
-    light_intensity =""
-    sprinkler_status = False
-    fan_status = False
+    instance = None    
 
     def __new__(cls, *args, **kargs):
         if cls.instance is None:
-            cls.instance = object.__new__(cls,*args,**kargs)
+            cls.instance = object.__new__(cls)
         return cls.instance
 
     def __init__(self,temp,hum,light,spr,fan):
@@ -31,30 +31,34 @@ class Reader(object):
         for proc in psutil.process_iter():
             if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
                 
-                proc.kill()
-        sensor = adafruit_dht.DHT11(board.D23)
-        while True:
-            try:
-                GetDateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                light_intensity = self.readLdr()
-                temperature = sensor.temperature
-                air_humidity = sensor.humidity
-                print("Temperature: {}*C   Humidity: {}% ".format(temperature, air_humidity))
-                print("luminosite: {}".format(light_intensity)) 
+                proc.kill()        
+        
+        try:
+            GetDateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.light_intensity = self.readLdr()
+            self.temperature = dhtSensor.temperature
+            self.air_humidity = dhtSensor.humidity
+            print("Temperature: {}*C   Humidity: {}% ".format(self.temperature, self.air_humidity))
+            print("luminosite: {}".format(self.light_intensity)) 
 
-            except RuntimeError as error:
-                print(error.args[0])
-                time.sleep(2.0)
-                continue
-            except Exception as error:
-                sensor.exit()
-                raise error
+        except RuntimeError as error:
+            print(error.args[0])
             time.sleep(2.0)
+        except Exception as error:
+            dhtSensor.exit()
+            raise error
+        time.sleep(2.0)
+    
+    def updateGHState(self):
+        stateJson = json.dumps(self.instance.__dict__,indent=4)  
+        with open("data/GHState.json","w") as state:
+            state.write(stateJson)
     
     def readLdr (self):
         count = 0
         time.sleep(.1)
-        while (GPIO.input(ldr) == 0):
+        GPIO.setup(ldr, GPIO.IN)
+        while (GPIO.input(ldr) == GPIO.LOW):
             count += 1
 
         return count
