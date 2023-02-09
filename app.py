@@ -8,7 +8,9 @@ reader = Reader("","","",False,False)
 
 
 while True:
+    
     web.getCommands()
+    
     start = time.time()
     while (time.time()-start) <= 30:
         ctrl.execute(reader)

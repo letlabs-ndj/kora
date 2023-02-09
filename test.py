@@ -3,7 +3,6 @@ import enum
 
 
 
-
 class Commands(enum.Enum):
     Arrosage = 'Arrosage'
     Ventilation = 'Ventilation'
@@ -42,7 +41,6 @@ class Controlleur(object):
     def ajusterLuminosite(self):
         print('lum')
                
-
 
 
 ctrl = Controlleur()

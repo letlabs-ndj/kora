@@ -1,7 +1,7 @@
 {
-    "temperature": "8",
-    "air_humidity": "3",
-    "light_intensity": "2",
-    "sprinkler_status": "true",
-    "fan_status": "false"
+    "temperature": "20",
+    "air_humidity": "25",
+    "light_intensity": "15",
+    "sprinkler_status": false,
+    "fan_status": false
 }
