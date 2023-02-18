@@ -1,6 +1,6 @@
+import adafruit_dht
 import time
 import board
-import adafruit_dht
 import psutil
 import os
 import datetime
@@ -63,4 +63,4 @@ class Reader(object):
 
         return count
 
-
+    

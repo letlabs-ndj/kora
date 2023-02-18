@@ -3,5 +3,5 @@
     "air_humidity": "25",
     "light_intensity": "15",
     "sprinkler_status": false,
-    "fan_status": false
+    "fan_status": true
 }

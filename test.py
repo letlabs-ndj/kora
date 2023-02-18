@@ -1,47 +1,45 @@
+import sys
+
+from PySide2.QtGui import QGuiApplication
+from PySide2.QtQml import QQmlApplicationEngine
+from PySide2.QtCore import QTimer, QObject, Signal , Slot
 import json
-import enum
+from time import strftime, localtime
 
+class Gui (QObject):
+    def __init__(self):
+        super().__init__()
 
+    def update_time(self):
+        # Pass the current time to QML.
+        with open("data/GHState.json", "r") as cmds_file:
+                    val = json.load(cmds_file)
+        temp = val['temperature']
+        hum = val['air_humidity']
+        lum = val['light_intensity']
+        sprinkler = val['sprinkler_status']
+        ven = val['fan_status']
+        engine.rootObjects()[0].setProperty('temp', temp)
+        engine.rootObjects()[0].setProperty('hum', hum)
+        engine.rootObjects()[0].setProperty('lum', lum)
+        engine.rootObjects()[0].setProperty('sprinkler', sprinkler)
+        engine.rootObjects()[0].setProperty('ven', ven)
 
-class Commands(enum.Enum):
-    Arrosage = 'Arrosage'
-    Ventilation = 'Ventilation'
-    Eclairage = 'Eclairage'
+    @Slot(str)
+    def text(self,txt):
+        print(txt)
 
+app = QGuiApplication(sys.argv)
 
-class Controlleur(object):
-    instance = None
+engine = QQmlApplicationEngine()
+engine.quit.connect(app.quit)
+engine.load('main.qml')
 
-    def __new__(cls, *args, **kargs):
-        if cls.instance is None:
-            cls.instance = object.__new__(cls)
-        return cls.instance
+gui = Gui()
+engine.rootObjects()[0].setProperty('gui', gui)
+timer = QTimer()
+timer.setInterval(100)  # msecs 100 = 1/10th sec
+timer.timeout.connect(gui.update_time)
+timer.start()
 
-    def execute(self):
-        with open("commands.json", "r") as cmds_file:
-            cmds = json.load(cmds_file)
-
-        for cmd in cmds:
-            if cmd['type'] == Commands.Arrosage.value:
-                self.actionner()
-                
-
-            elif cmd['type'] == Commands.Ventilation.value:
-                self.actionner()
-                
-
-            else:
-                self.ajusterLuminosite()
-
-
-    def actionner(self):        
-        print('arro/ven')
-
-      
-    def ajusterLuminosite(self):
-        print('lum')
-               
-
-
-ctrl = Controlleur()
-ctrl.execute()
+sys.exit(app.exec_())

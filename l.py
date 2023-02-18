@@ -52,9 +52,9 @@ class Frontend(Thread):
     def run(self):
         subprocess.run("python3 test.py ",shell=True, check=True)
 
-if __name__ == "__main__":
-    Backend()
-    Frontend()
-    while True:
-        pass
+
+Backend()
+Frontend()
+while True:
+    pass
 
