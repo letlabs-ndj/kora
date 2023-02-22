@@ -50,7 +50,7 @@ class Frontend(Thread):
         self.daemon = True
         self.start()
     def run(self):
-        subprocess.run("python3 test.py ",shell=True, check=True)
+        subprocess.run("python3 test.py --style material",shell=True, check=True)
 
 if __name__ == "__main__":
     Backend()

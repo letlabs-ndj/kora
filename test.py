@@ -5,7 +5,10 @@ from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QTimer, QObject, Signal , Slot
 import json
 from time import strftime, localtime
+from Controlleur import Controlleur
+import koraresource
 
+ctrl = Controlleur()
 class Gui (QObject):
     def __init__(self):
         super().__init__()
@@ -25,9 +28,18 @@ class Gui (QObject):
         engine.rootObjects()[0].setProperty('sprinkler', sprinkler)
         engine.rootObjects()[0].setProperty('ven', ven)
 
+    @Slot(bool)
+    def ventilage(self,val):
+        ctrl.ventilage(val)
+
+    @Slot(bool)
+    def arrosage(self,val):
+        ctrl.arrosage(val)
+
     @Slot(str)
-    def text(self,txt):
-        print(txt)
+    def eclairage(self,txt):
+        ctrl.ajusterLuminosite(int(float(txt)))
+
 
 app = QGuiApplication(sys.argv)
 
