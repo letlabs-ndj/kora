@@ -6,9 +6,12 @@ from PySide2.QtCore import QTimer, QObject, Signal , Slot
 import json
 from time import strftime, localtime
 from Controlleur import Controlleur
+import Reader
+import app
 import koraresource
 
 ctrl = Controlleur()
+
 class Gui (QObject):
     def __init__(self):
         super().__init__()
@@ -22,20 +25,33 @@ class Gui (QObject):
         lum = val['light_intensity']
         sprinkler = val['sprinkler_status']
         ven = val['fan_status']
+       
         engine.rootObjects()[0].setProperty('temp', temp)
         engine.rootObjects()[0].setProperty('hum', hum)
         engine.rootObjects()[0].setProperty('lum', lum)
         engine.rootObjects()[0].setProperty('sprinkler', sprinkler)
         engine.rootObjects()[0].setProperty('ven', ven)
-
+        
     @Slot(bool)
     def ventilage(self,val):
-        ctrl.ventilage(val)
+        if val:
+            print(val)
+            ctrl.ventilage("true")
+        else:
+            print(val)
+            ctrl.ventilage("false")
+            
+        
 
     @Slot(bool)
     def arrosage(self,val):
-        ctrl.arrosage(val)
-
+        if val:
+            ctrl.arrosage("true")
+            print(val)
+        else:
+            ctrl.arrosage("false")
+            print(val)
+        
     @Slot(str)
     def eclairage(self,txt):
         ctrl.ajusterLuminosite(int(float(txt)))

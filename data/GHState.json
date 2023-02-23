@@ -1,7 +1,8 @@
 {
-    "temperature": "20",
-    "air_humidity": "25",
-    "light_intensity": "15",
+    "temperature": 27,
+    "air_humidity": 6,
+    "light_intensity": 21,
+    "CO2Level": "0",
     "sprinkler_status": false,
-    "fan_status": true
+    "fan_status": false
 }
