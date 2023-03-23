@@ -3,15 +3,29 @@ import board
 import adafruit_dht
 import psutil
 import os
+import glob
 import datetime
 import RPi.GPIO as GPIO
 import json
+import data
 import busio
+import serial
+from w1thermsensor import W1ThermSensor
 import adafruit_ccs811
 from board import *
 
-i2c = board.I2C()   # uses board.SCL and board.SDA
-ccs =  adafruit_ccs811.CCS811(i2c)
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
+
+base_dir = '/sys/bus/w1/devices/'
+device_folder = glob.glob(base_dir + '28*')[0]
+device_file = device_folder + '/w1_slave'
+ser = serial.Serial('/dev/ttyACM0',9600, timeout=1)
+
+#tempsensor = W1ThermSensor()
+
+#i2c = board.I2C()   # uses board.SCL and board.SDA
+#ccs =  adafruit_ccs811.CCS811(i2c)
 
 
 ldr = 12 #UV led pin
@@ -19,6 +33,7 @@ ldr = 12 #UV led pin
 #We define which pin to use and the type of sensor we which to read (In our case we want to read a
 #DHT11 sensor
 dhtSensor = adafruit_dht.DHT11(board.D23,use_pulseio=False)
+
 
 #The Reader will be resposible for reading all sensors at a time and store their values
 #It will also store the state of our different equipements
@@ -33,67 +48,95 @@ class Reader(object):
         return cls.instance
 
     def __init__(self):
-        self.temperature = '0'
-        self.air_humidity = '0'
-        self.light_intensity = '0'
-        self.CO2Level = '0'
-        self.sprinkler_status = False
-        self.fan_status = False    
-
+        return None
+        
 
 #The function that will permit the Reader object to read all the sensors
     def getReadings(self):
-        self.readTempAndHum() 
+        self.readHum() 
         self.readLdr()
-        self.updateGHState()
-        time.sleep(2.0)
+        self.readTemp()
+        
+        val = data.getGHState()
+        
+        val['temperature']=data.sensorData["temperature"]
+        val['air_humidity']=data.sensorData["air_humidity"]
+        val['light_intensity']=data.sensorData["light_intensity"]
+        
+        
+        data.updateGHState(val)
+        
+        time.sleep(1.0)
     
 
-#The function that will permit the Reader object to save the actual state of the greenhouse
-#in a json file
-    def updateGHState(self):
-    #we convert the reader instance into a json
-        stateJson = json.dumps(self.instance.__dict__,indent=4)
-    #we then write the json into a json file
-        with open("data/GHState.json","w") as state:
-            state.write(stateJson)
+
     
 #The function for reading light intensity from light dependent resistor
     def readLdr (self):
-        count = 0
-        GPIO.setup(ldr, GPIO.OUT)
-        GPIO.output(ldr, GPIO.LOW)
-        time.sleep(1)
-        GPIO.setup(ldr, GPIO.IN)
-        while (GPIO.input(ldr) == GPIO.LOW):
-            count += 1
+        # count = 0
+        # GPIO.setup(ldr, GPIO.OUT)
+        # GPIO.output(ldr, GPIO.LOW)
+        # time.sleep(1)
+        # GPIO.setup(ldr, GPIO.IN)
+        # while (GPIO.input(ldr) == GPIO.LOW):
+        #     count += 1
+        ser.flush()
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            print(line)
         
-        self.light_intensity=int(100-(count/5000)*100)
-        print("luminosite: {}".format(self.light_intensity))
+        data.sensorData["light_intensity"] = int(line)
+
+        print("luminosite: {}".format(data.sensorData["light_intensity"]))
         
 
 #The function for reading the temperature and air humidity
-    def readTempAndHum (self):
+    def readHum (self):
     #We make sure there is no libgpiod process running. If it is the case we kill it
         for proc in psutil.process_iter():
             if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
                 
                 proc.kill()        
         
-        try:
-            self.temperature = dhtSensor.temperature #we get the temperature
-            self.air_humidity = dhtSensor.humidity  #we get the air humidity
-            print("Temperature: {}*C   Humidity: {}% ".format(self.temperature, self.air_humidity))
+        try:            
+            data.sensorData["air_humidity"] = int(dhtSensor.humidity)  #we get the air humidity
+
+            print("Humidity: {}% ".format(data.sensorData["air_humidity"]))
             
 
         except RuntimeError as error:
             print(error.args[0])
-            time.sleep(2.0)
         except Exception as error:
             dhtSensor.exit()
             raise error
     
+    def readTemp (self):
+        temp_c = sensor.get_temperature()
+        
+        def read_temp_raw():
+            f = open(device_file, 'r')
+            lines = f.readlines()
+            f.close()
+            return lines
+
+        lines = read_temp_raw()
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_temp_raw()
+        equals_pos = lines[1].find('t=')
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos+2:]
+            temp_c = float(temp_string) / 1000.0
+            data.sensorData["temperature"] = int(temp_c) #we get the temperature
+            # temp_f = temp_c * 9.0 / 5.0 + 32.0
+            
     
     def readAirQuality(self):
-        self.CO2Level = str(ccs.eco2)
+        data.sensorData["CO2Level"] = int(ccs.eco2)
         print("CO2: ", ccs.eco2, " TVOC:", ccs.tvoc)
+        
+
+
+if __name__ == "__main__":
+    reader = Reader()
+    reader.getReadings()

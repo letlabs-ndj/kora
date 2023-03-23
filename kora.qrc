@@ -3,8 +3,6 @@
     <qresource prefix="icons">
     <file alias="user.png">assets/images/user.png</file>
     <file>kora.conf</file>    
-    <file>assets/font/nunito.ttf</file>
     <file>assets/font/fontello.ttf</file>
-    <file>assets/font/MamaKiloBlack.ttf</file>
     </qresource>
 </RCC>

@@ -8,10 +8,10 @@ ApplicationWindow {
     width: 900
     height: 450
     visible: true
-    property string temp:"0"
-    property string hum:"0"
-    property string lum:"0"
-    property string air_qual:"00"
+    property int temp:0
+    property int hum:0
+    property int lum:0
+    property int air_qual:0
     property bool sprinkler:true
     property bool ven:true
     property QtObject gui    
@@ -41,7 +41,6 @@ ApplicationWindow {
 
                     Text{
                     text: "KORA DASHBOARD"
-                    font.family: mamakilo.font.family
                     topPadding : 15
                     font.pointSize:20
                     color:"#367E18"
@@ -190,8 +189,15 @@ ApplicationWindow {
                             font.pointSize: controlsfontSize
                         }
                         Switch {
-                            checked:sprinkler
-                            onClicked:gui.ventilage(checked)
+                            id:venti
+                            checked:ven
+                            onCheckedChanged: {
+                                if (checked) {
+                                    gui.ventilage(true)
+                                }else{
+                                    gui.ventilage(false)
+                                }
+                            }
                         }
                     }
 
@@ -203,8 +209,16 @@ ApplicationWindow {
                             font.pointSize:controlsfontSize
                         }
                         Switch {
+                            id:arro
                             checked:sprinkler
-                            onClicked:gui.arrosage(checked)
+                            onCheckedChanged: {
+                                if (checked) {
+                                    gui.arrosage(true)
+                                }else{
+                                    gui.arrosage(false)
+                                }
+                            }                           
+                           
                         }
                     }
                     
@@ -216,8 +230,8 @@ ApplicationWindow {
                             font.pointSize: controlsfontSize
                         }
                         Slider {
-                            from: 1
-                            value: 25
+                            from: 0
+                            value: 0
                             to: 100
                             onPositionChanged:{
                                 gui.eclairage(value)

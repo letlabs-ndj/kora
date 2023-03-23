@@ -39,7 +39,7 @@ def on_open(ws):
     def run(*args):
         while True:
             try:
-                with open("data/GHState.json",'r') as state_file:
+                with open("  data/GHState.json",'r') as state_file:
                     state = json.load(state_file)
                 data = json.dumps(state)
                 time.sleep(3)
@@ -54,7 +54,7 @@ def on_open(ws):
 headers={'Content-Type':'application/json','Accept': 'text/plain'}
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://localhost:8080/ws",
+    ws = websocket.WebSocketApp("ws://localhost:8765",
                                 header=headers,
                                 on_open=on_open,
                                 on_message=on_message,

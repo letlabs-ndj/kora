@@ -1,14 +1,14 @@
 [
     {
         "type": "Arrosage",
-        "val": "true"
+        "val": "false"
     },
     {
         "type": "Eclairage",
-        "val": "25"
+        "val": "30"
     },
     {
         "type": "Ventilation",
-        "val": "false"
+        "val": "true"
     }
 ]

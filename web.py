@@ -1,5 +1,7 @@
 import requests
 import json
+import time
+#from Controlleur import Controlleur
 
 def getCommands():
     try:
@@ -26,3 +28,15 @@ def sendGHState():
     except:
         pass
     
+if __name__ == "__main__":
+    #ctrl = Controlleur()
+    while True:        
+            
+        start = time.time()
+        
+        while (time.time()-start) <= 10:
+            getCommands()
+            #ctrl.execute()
+            print(time.time()-start,"sec")
+            
+        sendGHState()
