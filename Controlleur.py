@@ -29,19 +29,19 @@ class Controlleur(object):
             cls.instance = object.__new__(cls)
         return cls.instance
 
-    def execute(self):
+    def execute(self,reader):
         with open("data/commands.json", "r") as cmds_file:
             cmds = json.load(cmds_file)
 
         for cmd in cmds:
             if cmd['type'] == Commands.Arrosage.value:
                 print('arro')
-                self.arrosage(cmd['val'])
+                self.arrosage(reader,cmd['val'])
                 
 
             elif cmd['type'] == Commands.Ventilation.value:
                 print('ven')
-                self.ventilage(cmd['val'])
+                self.ventilage(reader,cmd['val'])
                 
 
             else:

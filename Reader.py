@@ -8,6 +8,7 @@ import datetime
 import RPi.GPIO as GPIO
 import json
 import data
+import data
 import busio
 import serial
 from w1thermsensor import W1ThermSensor
