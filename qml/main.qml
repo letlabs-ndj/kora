@@ -5,8 +5,8 @@ import QtQuick.Controls.Material 2.15
 
 ApplicationWindow {
     title: qsTr("Test")
-    width: 1000
-    height: 600
+    width: Screen.width
+    height: Screen.height
     visible: true
     property var temp:"0"
     property var hum:"0"
@@ -69,20 +69,29 @@ ApplicationWindow {
                             leftPadding : -50
                             topPadding : 15      
 
-                            Text{
+                            Rectangle{
                                 id:notif
-                                text:"\uE804"
-                                font.family: fontello.font.family
-                                color: "white"
+                                width:20
+                                height:20                              
+                                color:"transparent"
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/notif.png"
+                                    fillMode: Image.PreserveAspectCrop
+                                }
                             }
 
-                            Text{
-                                id:network
-                                text:"\uE801"
-                                font.family: fontello.font.family
-                                color: "white"
+                            Rectangle{
+                                id:reseau
+                                width:15
+                                height:15                            
+                                color:"transparent"
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/reseau.png"
+                                    fillMode: Image.PreserveAspectCrop
+                                }
                             }
-                
 
                     }
                 }

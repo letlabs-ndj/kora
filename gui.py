@@ -5,6 +5,8 @@ import datetime
 from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QTimer, QObject, Signal , Slot,QUrl
+from moderngl_window.context.base import BaseWindow
+from moderngl_window.context.pyside2.keys import Keys
 import json
 from time import strftime, localtime
 import data
@@ -19,10 +21,11 @@ class Gui (QObject):
         self.timer = QTimer()    
         self.timer.timeout.connect(lambda: self.setTime())
         self.timer.start(1000)
+        
+        
 
      # Signal Set Data
-    printTime = Signal(str)    
-    printTime2 = Signal(str)    
+    printTime = Signal(str)       
 
 
     # def update_time(self):

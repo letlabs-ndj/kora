@@ -1,14 +1,37 @@
 [
     {
-        "type": "Arrosage",
-        "val": "false"
+        "id": 1,
+        "url": "https://koraapi.alwaysdata.net/apps/com/1/",
+        "param": "temperature",
+        "valeur": "25.00",
+        "serre": 5
     },
     {
-        "type": "Eclairage",
-        "val": "30"
+        "id": 2,
+        "url": "https://koraapi.alwaysdata.net/apps/com/2/",
+        "param": "temperature",
+        "valeur": "25.00",
+        "serre": 2
     },
     {
-        "type": "Ventilation",
-        "val": "true"
+        "id": 3,
+        "url": "https://koraapi.alwaysdata.net/apps/com/3/",
+        "param": "luminosite",
+        "valeur": "35.00",
+        "serre": 8
+    },
+    {
+        "id": 4,
+        "url": "https://koraapi.alwaysdata.net/apps/com/4/",
+        "param": "luminosite",
+        "valeur": "35.00",
+        "serre": 4
+    },
+    {
+        "id": 5,
+        "url": "https://koraapi.alwaysdata.net/apps/com/5/",
+        "param": "luminosite",
+        "valeur": "35.00",
+        "serre": 10
     }
 ]

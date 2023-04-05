@@ -2,9 +2,8 @@ import json
 
 sensorData ={
     "temperature": 0,
-    "air_humidity": 0,
-    "light_intensity": 0,
-    "CO2Level": "0"
+    "humiditeAir": 0,
+    "luminosite": 0,
 }
 
 def getGHState(file):

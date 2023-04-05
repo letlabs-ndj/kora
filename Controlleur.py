@@ -16,9 +16,9 @@ GPIO.setup(pinVen, GPIO.OUT)
 
 
 class Commands(enum.Enum):
- Arrosage = 'Arrosage'
- Ventilation = 'Ventilation'
- Eclairage = 'Eclairage'
+ Arrosage = 'humiditeSol'
+ Ventilation = 'humiditeAir'
+ Eclairage = 'luminosite'
 
 
 class Controlleur(object):
@@ -34,18 +34,18 @@ class Controlleur(object):
             cmds = json.load(cmds_file)
 
         for cmd in cmds:
-            if cmd['type'] == Commands.Arrosage.value:
+            if cmd['param'] == Commands.Arrosage.value:
                 print('arro')
-                self.arrosage(reader,cmd['val'])
+                self.arrosage(reader,cmd['valeur'])
                 
 
-            elif cmd['type'] == Commands.Ventilation.value:
+            elif cmd['param'] == Commands.Ventilation.value:
                 print('ven')
-                self.ventilage(reader,cmd['val'])
+                self.ventilage(reader,cmd['valeur'])
                 
 
             else:
-                self.ajusterLuminosite(int(cmd['val']))
+                self.ajusterLuminosite(int(cmd['valeur']))
                 print('lum')
 
 
@@ -69,7 +69,7 @@ class Controlleur(object):
    
          data.updateGHState(val)
 
-
+                                                                                                                                                                                                                                                                                                                                 
     def ventilage(self,val):
          a=False
          if val=="true":

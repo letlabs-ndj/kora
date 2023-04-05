@@ -1,8 +1,10 @@
 {
     "temperature": 26,
-    "air_humidity": 6,
-    "light_intensity": 4,
-    "CO2Level": "0",
+    "humiditeSol": 0,
+    "humiditeAir": 6,    
+    "ph": 0,
+    "luminosite": 0,
     "sprinkler_status": true,
-    "fan_status": false
+    "fan_status": false,
+    "user_serre":"letlabs"
 }

@@ -66,19 +66,29 @@ Item {
                             topPadding : 15 
 
 
-                        Text{
-                            id:notif
-                            text:"\uF0F3"
-                            font.family: fontello.font.family
-                            color: "white"
-                        }
+                        Rectangle{
+                                id:notif_two
+                                width:20
+                                height:20                              
+                                color:"transparent"
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/notif.png"
+                                    fillMode: Image.PreserveAspectCrop
+                                }
+                            }
 
-                        Text{
-                            id:signal
-                            text:"\uE801"
-                            font.family: fontello.font.family
-                            color: "white"
-                        }
+                        Rectangle{
+                                id:reseau_two
+                                width:15
+                                height:15                            
+                                color:"transparent"
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/reseau.png"
+                                    fillMode: Image.PreserveAspectCrop
+                                }
+                            }
 
                         Component.onCompleted: {
                             socket.active = !socket.active
@@ -233,9 +243,7 @@ Item {
                             Dialog{
                                 id: qrDialog
                                 width:300
-                                height:250
-                                x: -500
-                                y: 80
+                                height:250                                
                                 
                                 Image{
                                     anchors.fill: parent

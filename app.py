@@ -18,7 +18,7 @@ class Backend(Thread):
         self.start()
         
     def run(self):
-    
+        subprocess.run("python3 Reader.py",shell=True, check=True)
         
 
 class Frontend(Thread):
@@ -27,20 +27,21 @@ class Frontend(Thread):
         self.daemon = True
         self.start()
     def run(self):
-        subprocess.run("python3 test.py --style material",shell=True, check=True)
+        subprocess.run("python3 gui.py --style material",shell=True, check=True)
 
-class Frontend(Thread):
+class WebController(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.daemon = True
         self.start()
     def run(self):
-        subprocess.run("python3 test.py --style material",shell=True, check=True)
+        subprocess.run("python3 web.py",shell=True, check=True)
 
 
 if __name__ == "__main__":
     Backend()
     Frontend()
+    WebController()
     while True:
         pass
 

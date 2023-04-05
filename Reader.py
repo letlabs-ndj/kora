@@ -61,8 +61,8 @@ class Reader(object):
         val = data.getGHState()
         
         val['temperature']=data.sensorData["temperature"]
-        val['air_humidity']=data.sensorData["air_humidity"]
-        val['light_intensity']=data.sensorData["light_intensity"]
+        val['humiditeAir']=data.sensorData["humiditeAir"]
+        val['luminosite']=data.sensorData["luminosite"]
         
         
         data.updateGHState(val)
@@ -81,15 +81,15 @@ class Reader(object):
         # GPIO.setup(ldr, GPIO.IN)
         # while (GPIO.input(ldr) == GPIO.LOW):
         #     count += 1
-        ser.flush()
-        if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8').rstrip()
-            print(line)
-        
-        data.sensorData["light_intensity"] = int(line)
+        # Lire la donnée reçue depuis la Raspberry Pi
+        data = ser.readline().decode().strip()
+       
+        data.sensorData["luminosite"] = data
 
-        print("luminosite: {}".format(data.sensorData["light_intensity"]))
+        print("luminosite: {}".format(data.sensorData["luminosite"]))
         
+        # Fermer la connexion série
+        ser.close()
 
 #The function for reading the temperature and air humidity
     def readHum (self):
@@ -100,9 +100,9 @@ class Reader(object):
                 proc.kill()        
         
         try:            
-            data.sensorData["air_humidity"] = int(dhtSensor.humidity)  #we get the air humidity
+            data.sensorData["humiditeAir"] = int(dhtSensor.humidity)  #we get the air humidity
 
-            print("Humidity: {}% ".format(data.sensorData["air_humidity"]))
+            print("Humidity: {}% ".format(data.sensorData["humiditeAir"]))
             
 
         except RuntimeError as error:
