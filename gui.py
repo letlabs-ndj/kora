@@ -22,12 +22,13 @@ class Gui (QObject):
 
      # Signal Set Data
     printTime = Signal(str)    
+    printTime2 = Signal(str)    
 
 
-    def update_time(self):
-        # Pass the current time to QML.
-        curr_time = strftime("%H:%M:%S", localtime())
-        engine.rootObjects()[0].setProperty('currTime', curr_time)
+    # def update_time(self):
+    #     # Pass the current time to QML.
+    #     curr_time = strftime("%H:%M:%S", localtime())
+    #     engine.rootObjects()[0].setProperty('currTime', curr_time)
 
 
     def update_data(self):
@@ -86,6 +87,7 @@ class Gui (QObject):
         formatDate = now.strftime("%H:%M:%S")
         print(formatDate)
         self.printTime.emit(formatDate)
+        self.printTime2.emit(formatDate)
 
 
 if __name__== "__main__":

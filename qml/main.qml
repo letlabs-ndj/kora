@@ -5,8 +5,8 @@ import QtQuick.Controls.Material 2.15
 
 ApplicationWindow {
     title: qsTr("Test")
-    width: 830
-    height: 500
+    width: 1000
+    height: 600
     visible: true
     property var temp:"0"
     property var hum:"0"
@@ -17,12 +17,13 @@ ApplicationWindow {
     property QtObject gui    
     Material.theme: Material.light
     Material.accent: "#367E18"
-    property var datafontSize: 28
+    property var datafontSize: 30
     property var controlsfontSize: 15
     property bool pass:false
     property alias actualPage: stack.currentItem
     FontLoader { id: fontello; source: "assets/font/fontello.ttf" }
     
+
  StackView {
         id: stack
         initialItem: mainView
@@ -40,37 +41,52 @@ ApplicationWindow {
         }
             
             Row {
-                spacing: 180
-                leftPadding : 380
+                topPadding : 30
+                width: parent.width
 
                     Text{
-                    text: "TIME"
-                    topPadding : 5
-                    font.pointSize:20
-                    color: "white"
+                        id:time_txt_two
+                        text: "TIME"
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.bottomMargin: 0
+                        anchors.rightMargin: parent.width / 2
+                        anchors.topMargin: 50
+                        anchors.leftMargin: (parent.width / 2) - 80
+                        font.pointSize:30
+                        color: "white"
                 }
 
-                Row{
-                    spacing: 15
-                    leftPadding : 80
-                    topPadding: 15                   
+                Rectangle{
+                    width: 50
+                    anchors.right :parent.right
 
-                    Text{
-                        id:notif
-                        text:"\uE804"
-                        font.family: fontello.font.family
-                        color: "white"
+                        Row{
+                            spacing: 15
+                            leftPadding : -50
+                            topPadding : 15      
+
+                            Text{
+                                id:notif
+                                text:"\uE804"
+                                font.family: fontello.font.family
+                                color: "white"
+                            }
+
+                            Text{
+                                id:network
+                                text:"\uE801"
+                                font.family: fontello.font.family
+                                color: "white"
+                            }
+                
+
                     }
-
-                    Text{
-                        id:network
-                        text:"\uE801"
-                        font.family: fontello.font.family
-                        color: "white"
-                    }
-         
-
                 }
+                
                 
                 
             }
@@ -79,12 +95,13 @@ ApplicationWindow {
             
                     Column{
                         spacing:10
-                        leftPadding:380
-                        topPadding:50
+                        topPadding:parent.height/5
+                        leftPadding:(parent.width/2) - 50
+                        rightPadding:parent.width/2
                         
                         Rectangle{
                             width:100
-                            height:100
+                            height:100                              
                             color:"transparent"
                             Image{
                                 anchors.fill: parent
@@ -142,8 +159,14 @@ ApplicationWindow {
                         }
                        
                      }
-           
+           Connections{
+                target: backend
+                function onPrintTime(time){
+                    time_txt_two.text = time
+                }
+            }
     }
 }
+
 }
 

@@ -39,206 +39,222 @@ Item {
                     opacity:0.5
             Row {
                 spacing: 180
-                leftPadding : 380
+                width: parent.width
 
                     Text{
                         id:time_txt
-                        text: currTime
-                        topPadding : 5
+                        text: "time"
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.bottomMargin: 0
+                        anchors.rightMargin: parent.width / 2
+                        anchors.topMargin: 50
+                        anchors.leftMargin: (parent.width / 2) - 50
                         font.pointSize:20
                         color: "white"
                 }
 
-                Row{
-                    spacing: 15
-                    leftPadding : 80
-                    topPadding: 15
+                Rectangle{
+                     width: 50
+                    anchors.right :parent.right
+                        Row{
+                            spacing: 15
+                            leftPadding : -50
+                            topPadding : 15 
 
 
-                    Text{
-                        id:notif
-                        text:"\uF0F3"
-                        font.family: fontello.font.family
-                        color: "white"
-                    }
-
-                    Text{
-                        id:signal
-                        text:"\uE801"
-                        font.family: fontello.font.family
-                        color: "white"
-                    }
-
-                    Component.onCompleted: {
-                        socket.active = !socket.active
-                    }
-                    WebSocket {
-                        id: socket
-                        url: "ws://localhost:8765"
-                        onTextMessageReceived: {
-                            console.log(message)
-                            messageDialog.open()
-                        }
-                        onStatusChanged: if (socket.status == WebSocket.Error) {
-                                            console.log("Error: " + socket.errorString)
-                                        } else if (socket.status == WebSocket.Open) {
-                                            console.log("socket opened")
-                                            socket.sendTextMessage("yeah")
-                                        } else if (socket.status == WebSocket.Closed) {
-                                            messageBox.text += "\nSocket closed"
-                                        }
-                        active: false
-                    }
-                    
-
-                    Button{
-                        id:qr                        
-                        font.family: fontello.font.family
-                   
-                        Text{                       
-                            text:"\uE804"
+                        Text{
+                            id:notif
+                            text:"\uF0F3"
                             font.family: fontello.font.family
                             color: "white"
                         }
-                        background: Rectangle {
-                            implicitWidth: 20
-                            implicitHeight: 20                            
-                            border.color: "transparent"
-                            color:"transparent"
-                            
+
+                        Text{
+                            id:signal
+                            text:"\uE801"
+                            font.family: fontello.font.family
+                            color: "white"
                         }
-                        onClicked: {
-                            qrDialog.open()
-                            socket.sendTextMessage("let")
+
+                        Component.onCompleted: {
+                            socket.active = !socket.active
+                        }
+                        WebSocket {
+                            id: socket
+                            url: "ws://localhost:8765"
+                            onTextMessageReceived: {
+                                console.log(message)
+                                messageDialog.open()
                             }
+                            onStatusChanged: if (socket.status == WebSocket.Error) {
+                                                console.log("Error: " + socket.errorString)
+                                            } else if (socket.status == WebSocket.Open) {
+                                                console.log("socket opened")
+                                                socket.sendTextMessage("yeah")
+                                            } else if (socket.status == WebSocket.Closed) {
+                                                messageBox.text += "\nSocket closed"
+                                            }
+                            active: false
+                        }
+                        
 
-
-                        Dialog {
-                            id: messageDialog
-                            width:400
-                            x: -550
-                            y: 100
-
-
-                            background:Rectangle {
-                                color: "#100F0F"
-                                height:200
-                                opacity:0.8
-                                radius:10
-                                
-                                
-                            
-                            Column{
-                                spacing: 15
-                                anchors.fill: parent
-                                topPadding:10
-                                leftPadding:10
-                                
-                                Row{
-                                    spacing:10
-                                    Text{
-                                        text:"\uF0F3"
-                                        font.family: fontello.font.family
-                                        color:"white"
-                                        font.pointSize:15
-                                    }
-                                    Text{
-                                        text:"Authentification"  
-                                        color:"white"  
-                                        font.pointSize:15                                    
-                                    }
-
+                        Button{
+                            id:qr                        
+                            font.family: fontello.font.family
+                    
+                            Rectangle{
+                                width:15
+                                height:15                              
+                                color:"transparent"
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/qr.jpg"
+                                    fillMode: Image.PreserveAspectCrop
                                 }
-                                Label {                              
-                                    elide: Label.ElideRight
-                                    text: "Une demande de connection vient d’etre faites, entrez 
-votre mots dde passe pour valider la demande"
-                                    color:"white"
-                                }
+                            }
+                            background: Rectangle {
+                                implicitWidth: 20
+                                implicitHeight: 20                            
+                                border.color: "transparent"
+                                color:"transparent"
                                 
-                                TextField {
-                                    placeholderText: "Password"
-                                    echoMode: TextInput.Password
-                                    color:"white"
-                                    placeholderTextColor: "white"
-                                    width:350
-                                    background: Item {
-                                        implicitHeight: 40
-                                        Rectangle {
-                                            color: "white"
-                                            height: 3
-                                            width: parent.width
-                                            anchors.bottom: parent.bottom
+                            }
+                            onClicked: {
+                                qrDialog.open()
+                                socket.sendTextMessage("let")
+                                }
+
+
+                            Dialog {
+                                id: messageDialog
+                                width:400
+                                x: -parent.width/2 
+                                y:  parent.height/2
+
+
+                                background:Rectangle {
+                                    color: "#100F0F"
+                                    height:200
+                                    opacity:0.8
+                                    radius:10
+                                    
+                                    
+                                
+                                Column{
+                                    spacing: 15
+                                    anchors.fill: parent
+                                    topPadding:10
+                                    leftPadding:10
+                                    
+                                    Row{
+                                        spacing:10
+                                        Text{
+                                            text:"\uF0F3"
+                                            font.family: fontello.font.family
+                                            color:"white"
+                                            font.pointSize:15
                                         }
+                                        Text{
+                                            text:"Authentification"  
+                                            color:"white"  
+                                            font.pointSize:15                                    
+                                        }
+
+                                    }
+                                    Label {                              
+                                        elide: Label.ElideRight
+                                        text: "Une demande de connection vient d’etre faites, entrez 
+    votre mots dde passe pour valider la demande"
+                                        color:"white"
                                     }
                                     
-                                }
-
-                                Row{
-                                    spacing:10
-                                    leftPadding:170
-                                    RoundButton {
-                                        radius:10 
-                                        width:100                                       
-                                        highlighted: true
-                                        Material.accent: "white"
-
-                                        Text{
-                                            leftPadding:25
-                                            topPadding:15
-                                            text:"Valider"                                    
-                                    }
-                                        onClicked:{
-                                            socket.sendTextMessage(qsTr("OK"))
-                                            messageDialog.close()
+                                    TextField {
+                                        placeholderText: "Password"
+                                        echoMode: TextInput.Password
+                                        color:"white"
+                                        placeholderTextColor: "white"
+                                        width:350
+                                        background: Item {
+                                            implicitHeight: 40
+                                            Rectangle {
+                                                color: "white"
+                                                height: 3
+                                                width: parent.width
+                                                anchors.bottom: parent.bottom
                                             }
-                                    }
-                                    RoundButton {
-                                        id:annuler
-                                        radius:10  
-                                        width:100                                      
-                                        highlighted: true
-                                        Material.accent: "#BA1313"
-                                        Text{
-                                            leftPadding:25
-                                            topPadding:15
-                                            text:"Annuler"  
-                                            color:"white"                                  
-                                    }
-                                    onClicked: messageDialog.close()
+                                        }
+                                        
                                     }
 
+                                    Row{
+                                        spacing:10
+                                        leftPadding:170
+                                        RoundButton {
+                                            radius:10 
+                                            width:100                                       
+                                            highlighted: true
+                                            Material.accent: "white"
+
+                                            Text{
+                                                leftPadding:25
+                                                topPadding:15
+                                                text:"Valider"                                    
+                                        }
+                                            onClicked:{
+                                                socket.sendTextMessage(qsTr("OK"))
+                                                messageDialog.close()
+                                                }
+                                        }
+                                        RoundButton {
+                                            id:annuler
+                                            radius:10  
+                                            width:100                                      
+                                            highlighted: true
+                                            Material.accent: "#BA1313"
+                                            Text{
+                                                leftPadding:25
+                                                topPadding:15
+                                                text:"Annuler"  
+                                                color:"white"                                  
+                                        }
+                                        onClicked: messageDialog.close()
+                                        }
+
+                                    }
+                                }
+                                }
+
+                            }
+
+                            Dialog{
+                                id: qrDialog
+                                width:300
+                                height:250
+                                x: -500
+                                y: 80
+                                
+                                Image{
+                                    anchors.fill: parent
+                                    source: "../assets/images/qr-img.jpg"
+                                    fillMode: Image.PreserveAspectCrop
                                 }
                             }
-                            }
-
-                          }
-
-                          Dialog{
-                            id: qrDialog
-                            width:300
-                            height:250
-                            x: -500
-                            y: 80
                             
-                            Image{
-                                anchors.fill: parent
-                                source: "../assets/images/qr-img.jpg"
-                                fillMode: Image.PreserveAspectCrop
-                            }
-                          }
+                        }
+            
                         
-                    }
-         
                     
-                
-                
+                    
+                    }
                 }
             }
 
              Connections{
                 target: backend
-
                 function onPrintTime(time){
                     time_txt.text = time
                 }
@@ -254,17 +270,17 @@ votre mots dde passe pour valider la demande"
         anchors.rightMargin:20
         color:"#0A0A0A"
         height:200
-        width:400
+        width:parent.width
         radius: 50
         border.color:"transparent"
         opacity:0.7
     Row{
-        topPadding:50
-        leftPadding:30
-        spacing:70
+        leftPadding: (parent.width/2) - 350
+        topPadding: (parent.height/2)-130
+        spacing:parent.width/8
     
     Column{  
-        spacing:35      
+        spacing:parent.height/8    
         Row{
             Row{
                 spacing:60
@@ -383,7 +399,7 @@ votre mots dde passe pour valider la demande"
 
      Column{
         topPadding:15
-        spacing:10
+        spacing:parent.height/8
         Row{
             spacing:20
             Text{
