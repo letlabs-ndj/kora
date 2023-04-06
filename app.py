@@ -1,13 +1,8 @@
-from Reader import Reader
-import web
+
 import time
-from Controlleur import Controlleur
 from threading import Thread
-import json
-import data
 import subprocess
 
-reader = Reader()
 
 
 class Backend(Thread):
@@ -37,11 +32,19 @@ class WebController(Thread):
     def run(self):
         subprocess.run("python3 web.py",shell=True, check=True)
 
+class TimeController(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+    def run(self):
+        subprocess.run("python3 TimeController.py",shell=True, check=True)
 
 if __name__ == "__main__":
     Backend()
     Frontend()
     WebController()
+    TimeController()
     while True:
         pass
 

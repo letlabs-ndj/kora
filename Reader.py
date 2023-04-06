@@ -11,17 +11,16 @@ import data
 import data
 import busio
 import serial
-from w1thermsensor import W1ThermSensor
 import adafruit_ccs811
 from board import *
 
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+#os.system('modprobe w1-gpio')
+#os.system('modprobe w1-therm')
 
-base_dir = '/sys/bus/w1/devices/'
-device_folder = glob.glob(base_dir + '28*')[0]
-device_file = device_folder + '/w1_slave'
-ser = serial.Serial('/dev/ttyACM0',9600, timeout=1)
+#base_dir = '/sys/bus/w1/devices/'
+#device_folder = glob.glob(base_dir + '28*')[0]
+#device_file = device_folder + '/w1_slave'
+
 
 #tempsensor = W1ThermSensor()
 
@@ -56,9 +55,9 @@ class Reader(object):
     def getReadings(self):
         self.readHum() 
         self.readLdr()
-        self.readTemp()
+        #self.readTemp()
         
-        val = data.getGHState()
+        val = data.getGHState("data/GHState.json")
         
         val['temperature']=data.sensorData["temperature"]
         val['humiditeAir']=data.sensorData["humiditeAir"]
@@ -73,18 +72,13 @@ class Reader(object):
 
     
 #The function for reading light intensity from light dependent resistor
-    def readLdr (self):
-        # count = 0
-        # GPIO.setup(ldr, GPIO.OUT)
-        # GPIO.output(ldr, GPIO.LOW)
-        # time.sleep(1)
-        # GPIO.setup(ldr, GPIO.IN)
-        # while (GPIO.input(ldr) == GPIO.LOW):
-        #     count += 1
+    def readLdr (self):        
+        ser = serial.Serial('/dev/ttyACM0', 9600)
+
         # Lire la donnée reçue depuis la Raspberry Pi
-        data = ser.readline().decode().strip()
-       
-        data.sensorData["luminosite"] = data
+        val = ser.readline().decode().strip()
+        print(val)
+        data.sensorData["luminosite"]=val
 
         print("luminosite: {}".format(data.sensorData["luminosite"]))
         
@@ -140,4 +134,5 @@ class Reader(object):
 
 if __name__ == "__main__":
     reader = Reader()
-    reader.getReadings()
+    while True:
+        reader.getReadings()

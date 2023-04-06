@@ -1,11 +1,15 @@
 import requests
 import json
 import time
+import data
 #from Controlleur import Controlleur
 
+val = data.getGHState('data/identification.json')        
+numero_serre = val['numero_serre']
+params = {'serre':'2'}
 def getCommands():
     try:
-        response = requests.get('https://koraapi.alwaysdata.net/api/v1/com/',
+        response = requests.get('https://koraapi.alwaysdata.net/api/v1/com/',params=params,
         headers={'Accept': 'application/json'})
         print(f"Status Code: {response.status_code}, Content: {response.json()}")
 

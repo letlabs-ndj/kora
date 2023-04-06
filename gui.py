@@ -5,10 +5,9 @@ import datetime
 from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QTimer, QObject, Signal , Slot,QUrl
-from moderngl_window.context.base import BaseWindow
-from moderngl_window.context.pyside2.keys import Keys
 import json
 from time import strftime, localtime
+from Controlleur import Controlleur
 import data
 import qrcode
 import koraresource
@@ -26,7 +25,7 @@ class Gui (QObject):
 
      # Signal Set Data
     printTime = Signal(str)       
-
+    ctrl = Controlleur()
 
     # def update_time(self):
     #     # Pass the current time to QML.
@@ -39,8 +38,8 @@ class Gui (QObject):
         val = data.getGHState('data/GHState.json')
         
         temp = val['temperature']
-        hum = val['air_humidity']
-        lum = val['light_intensity']
+        hum = val['humiditeAir']
+        lum = val['luminosite']
         sprinkler = val['sprinkler_status']
         ven = val['fan_status']
 
@@ -90,7 +89,6 @@ class Gui (QObject):
         formatDate = now.strftime("%H:%M:%S")
         print(formatDate)
         self.printTime.emit(formatDate)
-        self.printTime2.emit(formatDate)
 
 
 if __name__== "__main__":

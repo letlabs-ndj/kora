@@ -1,11 +1,16 @@
 import requests
 import json
 import time
-#from Controlleur import Controlleur
+import data
+from Controlleur import Controlleur
+
+
+val = data.getGHState('data/identification.json')        
+numero_serre = val['numero_serre']
 
 def getCommands():
     try:
-        response = requests.get('http://localhost:8080/get',
+        response = requests.get('https://koraapi.alwaysdata.net/api/v1/com/3',
         headers={'Accept': 'application/json'})
         print(f"Status Code: {response.status_code}, Content: {response.json()}")
 
@@ -24,19 +29,18 @@ def sendGHState():
         data = json.dumps(state)
         headers={'Content-Type':'application/json','Accept': 'text/plain'}
 
-        response = requests.post('http://localhost:8080/post',data=data,headers=headers)
+        response = requests.put('https://koraapi.alwaysdata.net/api/v1/serre/',data=data,headers=headers)
     except:
         pass
     
 if __name__ == "__main__":
-    #ctrl = Controlleur()
-    while True:        
-            
+    ctrl = Controlleur()
+    while True:              
         start = time.time()
         
-        while (time.time()-start) <= 10:
+        while (time.time()-start) <= 3:
             getCommands()
-            #ctrl.execute()
+            ctrl.execute()
             print(time.time()-start,"sec")
             
         sendGHState()

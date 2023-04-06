@@ -19,4 +19,3 @@ def updateGHState(data):
 #we then write the json into a json file
     with open("data/GHState.json","w") as state:
         state.write(stateJson)
-
