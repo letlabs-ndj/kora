@@ -11,9 +11,11 @@ ApplicationWindow {
     property var temp:"0"
     property var hum:"0"
     property var lum:"0"
-    property string air_qual:"00"
-    property bool sprinkler:true
-    property bool ven:true
+    property string air_qual:"0"
+    property bool sprinkler:false
+    property bool ven:false
+    property bool ampoule:false
+    property string token:""
     property QtObject gui    
     Material.theme: Material.light
     Material.accent: "#367E18"
@@ -21,7 +23,7 @@ ApplicationWindow {
     property var controlsfontSize: 15
     property bool pass:false
     property alias actualPage: stack.currentItem
-    FontLoader { id: fontello; source: "assets/font/fontello.ttf" }
+    FontLoader { id: fontello; source: "../assets/font/fontello.ttf" }
     
 
  StackView {

@@ -12,16 +12,16 @@ def stop_arrosage_18h():
     ctrl.arrosage("true")
 
 def eclairage_18h():
-    ctrl.ajusterLuminosite(100)
+    ctrl.ajusterLuminosite("true")
 
 def stop_eclairage_18h():
-    ctrl.ajusterLuminosite(0)
+    ctrl.ajusterLuminosite("true")
 
 def job():
-    schedule.every().day.at('18:00').do(arrosage_18h)
-    schedule.every().day.at('18:05').do(stop_arrosage_18h)
-    schedule.every().day.at('04:41').do(eclairage_18h)
-    schedule.every().day.at('6:00').do(stop_eclairage_18h)
+    schedule.every().day.at('09:25').do(arrosage_18h)
+    schedule.every().day.at('09:30').do(stop_arrosage_18h)
+    schedule.every().day.at('09:25').do(eclairage_18h)
+    schedule.every().day.at('09:35').do(stop_eclairage_18h)
 
 
 job()

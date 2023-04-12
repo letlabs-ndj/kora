@@ -32,6 +32,22 @@ class WebController(Thread):
     def run(self):
         subprocess.run("python3 web.py",shell=True, check=True)
 
+class ParamSender(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+    def run(self):
+        subprocess.run("python3 web.py",shell=True, check=True)
+
+class CommandGetter(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+    def run(self):
+        subprocess.run("python3 cmdwebsocket.py",shell=True, check=True)
+
 class TimeController(Thread):
     def __init__(self):
         Thread.__init__(self)
@@ -43,8 +59,8 @@ class TimeController(Thread):
 if __name__ == "__main__":
     Backend()
     Frontend()
-    WebController()
-    TimeController()
+#    WebController()
+#    TimeController()
     while True:
         pass
 

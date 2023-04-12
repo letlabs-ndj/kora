@@ -1,3 +1,4 @@
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.2
@@ -9,6 +10,7 @@ import QtWebSockets 1.0
 Item {
 
     property string currTime:"0"
+    property string token:"0"
     Material.theme: Material.light
     Material.accent: "#367E18"
     
@@ -95,9 +97,10 @@ Item {
                         }
                         WebSocket {
                             id: socket
-                            url: "ws://localhost:8765"
+                            url: "ws://koraapi.alwaysdata.net/ws/serre/"+token+"/"
                             onTextMessageReceived: {
-                                console.log(message)
+                                data = JSON.parse(message)
+                                console.log(data)
                                 messageDialog.open()
                             }
                             onStatusChanged: if (socket.status == WebSocket.Error) {
@@ -142,8 +145,8 @@ Item {
                             Dialog {
                                 id: messageDialog
                                 width:400
-                                x: -parent.width/2 
-                                y:  parent.height/2
+                                x: -(parent.width/3) 
+                                y:  parent.height/3
 
 
                                 background:Rectangle {
@@ -240,17 +243,7 @@ Item {
 
                             }
 
-                            Dialog{
-                                id: qrDialog
-                                width:300
-                                height:250                                
-                                
-                                Image{
-                                    anchors.fill: parent
-                                    source: "../assets/images/qr-img.jpg"
-                                    fillMode: Image.PreserveAspectCrop
-                                }
-                            }
+                            
                             
                         }
             
@@ -282,10 +275,24 @@ Item {
         radius: 50
         border.color:"transparent"
         opacity:0.7
+
+    Dialog{
+        id: qrDialog
+        width:300
+        height:250
+        x: Screen.width/3
+        y:  Screen.height/6                           
+        
+        Image{
+            anchors.fill: parent
+            source: "../assets/images/qr-img.jpg"
+            fillMode: Image.PreserveAspectCrop
+        }
+    }
     Row{
-        leftPadding: (parent.width/2) - 350
+        leftPadding: (parent.width/2) - 320
         topPadding: (parent.height/2)-130
-        spacing:parent.width/8
+        spacing:parent.width/9
     
     Column{  
         spacing:parent.height/8    
@@ -349,13 +356,13 @@ Item {
         }   
 
         Row{
-            spacing:80
+            spacing:40
 
             Column{
                 spacing:15
 
                 Row{
-                    spacing:10
+                    spacing:5
                     Text{
                         text: "\uE801"
                         font.family: fontellone.font.family
@@ -364,7 +371,7 @@ Item {
                     }
                     Text{
                         id: light
-                        text: lum
+                        text: lum+" %"
                         font.pointSize: datafontSize
                         color:"white"
                     }
@@ -409,7 +416,7 @@ Item {
         topPadding:15
         spacing:parent.height/8
         Row{
-            spacing:20
+            spacing:18
             Text{
                 text: "Ventilateur"
                 topPadding : 15
@@ -417,13 +424,14 @@ Item {
                 color:"white"
             }
             Switch {
-                checked:ven
-                onClicked:gui.ventilage(checked)
+                id:vent
+                checked:!ven
+                onClicked:gui.ventilage(!vent.checked)
             }
         }
 
         Row{
-            spacing:35
+            spacing:25
             Text{
                 text: "Arroseur"
                 topPadding : 15
@@ -431,28 +439,28 @@ Item {
                 color:"white"
             }
             Switch {
-                checked:sprinkler
-                onClicked:gui.arrosage(checked)
+                id:arro
+                checked:!sprinkler
+                onClicked:gui.arrosage(!arro.checked)
             }
         }
         
         Row{
-            spacing:35
+            spacing:25
             Text{
                 text: "Eclairage"
                 topPadding : 10
                 font.pointSize: controlsfontSize
                 color:"white"
             }
-            Slider {
-                from: 1
-                value: 25
-                to: 100
-                onPositionChanged:{
-                    gui.eclairage(value)
-                } 
+	
+	 Switch {
+		id:am
+                checked:!ampoule
+                onClicked:gui.eclairage(!am.checked)
             }
-            
+
+                       
         }
      }
     }

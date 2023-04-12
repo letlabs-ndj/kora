@@ -1,19 +1,19 @@
 import json
-import Reader
+#import Reader
 import enum
 import RPi.GPIO as GPIO
-from gpiozero import PWMLED
 import data
 
 GPIO.setwarnings(False)
 
-pinArro = 7
+pinArro = 8
 pinVen = 18
-light = PWMLED(17)
+pinAmp =25
 
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(pinArro, GPIO.OUT)
 GPIO.setup(pinVen, GPIO.OUT)
-
+GPIO.setup(pinAmp, GPIO.OUT)
 
 class Commands(enum.Enum):
  Arrosage = 'humiditeSol'
@@ -29,27 +29,18 @@ class Controlleur(object):
             cls.instance = object.__new__(cls)
         return cls.instance
 
-    def execute(self,reader):
-        with open("data/commands.json", "r") as cmds_file:
-            cmds = json.load(cmds_file)
-
-        for cmd in cmds:
-            if cmd['param'] == Commands.Arrosage.value:
+    def execute(self,param,val):
+            if param == Commands.Arrosage.value:
                 print('arro')
-                self.arrosage(reader,cmd['valeur'])
-                
+                self.arrosage(val)                
 
-            elif cmd['param'] == Commands.Ventilation.value:
+            elif param == Commands.Ventilation.value:
                 print('ven')
-                self.ventilage(reader,cmd['valeur'])
-                
+                self.ventilage(val)                
 
             else:
-                self.ajusterLuminosite(int(cmd['valeur']))
+                self.ajusterLuminosite(val)
                 print('lum')
-
-
-
     
 
     def arrosage(self,val):
@@ -63,9 +54,9 @@ class Controlleur(object):
              print('arrosage non-actif')
          
          GPIO.output(pinArro, a)
-         val = data.getGHState()
+         val = data.getGHState("data/GHState.json")
         
-         val['sprinkler_status']=a
+         val['arroseur']=a
    
          data.updateGHState(val)
 
@@ -82,15 +73,26 @@ class Controlleur(object):
 
          GPIO.output(pinVen, a)
          
-         val = data.getGHState()
+         val = data.getGHState("data/GHState.json")
         
-         val['fan_status']=a
+         val['ventilateur']=a
    
          data.updateGHState(val)
 
       
     def ajusterLuminosite(self,val):
-         light.value = val/100
-         print(val)
+         a=False
+         if val=="true":
+             a=True
+             print('ampoule actif')
+             print(a)
+         else:
+             a=False
+             print("ampoule non-actif")
+	
+         GPIO.output(pinAmp,a)
+         val=data.getGHState("data/GHState.json")
+         val['luminosite']=a
+         data.updateGHState(val)
                
         

@@ -7,11 +7,13 @@ from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QTimer, QObject, Signal , Slot,QUrl
 import json
 from time import strftime, localtime
-from Controlleur import Controlleur
+#from Controlleur import Controlleur
 import data
 import qrcode
+from cmdwebsocket import token
 import koraresource
 
+#ctrl = Controlleur()
 
 class Gui (QObject):
     def __init__(self):
@@ -24,14 +26,22 @@ class Gui (QObject):
         
 
      # Signal Set Data
-    printTime = Signal(str)       
-    ctrl = Controlleur()
+    printTime = Signal(str)     
 
-    # def update_time(self):
-    #     # Pass the current time to QML.
-    #     curr_time = strftime("%H:%M:%S", localtime())
-    #     engine.rootObjects()[0].setProperty('currTime', curr_time)
+    def setToken(self):
+        # Pass the current time to QML.
+        curr_time = strftime("%H:%M:%S", localtime())
+        engine.rootObjects()[0].setProperty('currTime', curr_time)
 
+    def setControls(self):
+        val = data.getGHState("data/GHState.json")
+        sprinkler = val["arroseur"]
+        ven = val["ventilateur"]
+        tok = val["token"]
+        engine.rootObjects()[0].setProperty("sprinkler",val["arroseur"])
+        engine.rootObjects()[0].setProperty("ven",val["ventilateur"])
+        engine.rootObjects()[0].setProperty("ampoule",val["ampoule"])
+        engine.rootObjects()[0].setProperty("token",val["token"])
 
     def update_data(self):
         # Pass the current time to QML.
@@ -40,38 +50,42 @@ class Gui (QObject):
         temp = val['temperature']
         hum = val['humiditeAir']
         lum = val['luminosite']
-        sprinkler = val['sprinkler_status']
-        ven = val['fan_status']
 
         engine.rootObjects()[0].setProperty('temp', temp)
         engine.rootObjects()[0].setProperty('hum', hum)
         engine.rootObjects()[0].setProperty('lum', lum)
-        engine.rootObjects()[0].setProperty('sprinkler', sprinkler)
-        engine.rootObjects()[0].setProperty('ven', ven)
+        #engine.rootObjects()[0].setProperty('sprinkler', sprinkler)
+        #engine.rootObjects()[0].setProperty('ven', ven)
+       # engine.rootObjects()[0].setProperty('ampoule',ampoule)
         
-    @Slot(bool)
-    def ventilage(self,val):
-        if val:
-            print(val)
-            ctrl.ventilage("true")
-        else:
-            print(val)
-            ctrl.ventilage("false")
+    # @Slot(bool)
+    # def ventilage(self,val):
+    #     if val:
+    #         print(val)
+    #         ctrl.ventilage("true")
+    #     else:
+    #         print(val)
+    #         ctrl.ventilage("false")
             
         
 
-    @Slot(bool)
-    def arrosage(self,val):
-        if val:
-            ctrl.arrosage("true")
-            print(val)
-        else:
-            ctrl.arrosage("false")
-            print(val)
+    # @Slot(bool)
+    # def arrosage(self,val):
+    #     if val:
+    #         ctrl.arrosage("true")
+    #         print(val)
+    #     else:
+    #         ctrl.arrosage("false")
+    #         print(val)
         
-    @Slot(str)
-    def eclairage(self,txt):
-        ctrl.ajusterLuminosite(int(float(txt)))
+    # @Slot(bool)
+    # def eclairage(self,val):
+    #     if val:
+    #         ctrl.ajusterLuminosite("true")
+    #         print(val)
+    #     else:
+    #         ctrl.ajusterLuminosite("false")
+    #         print(val)
 
     @Slot(str,result=bool)
     def login(self,password):
@@ -93,7 +107,7 @@ class Gui (QObject):
 
 if __name__== "__main__":
     # generating a QR code using the make() function  
-    qr_img = qrcode.make("letlabs")  
+    qr_img = qrcode.make(token)  
     # saving the image file  
     qr_img.save("assets/images/qr-img.jpg") 
     app = QGuiApplication(sys.argv)

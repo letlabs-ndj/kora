@@ -11,8 +11,7 @@ import data
 import data
 import busio
 import serial
-import web
-#import adafruit_ccs811
+import adafruit_ccs811
 from board import *
 
 os.system('modprobe w1-gpio')
@@ -70,6 +69,7 @@ class Reader(object):
         time.sleep(1.0)
     
 
+
     
 #The function for reading light intensity from light dependent resistor
     def readLdr (self):        
@@ -77,11 +77,9 @@ class Reader(object):
 
         # Lire la donnée reçue depuis la Raspberry Pi
         val = ser.readline().decode().strip()
-        if val == "":
-               val="0"
-        lum = ((1023 - int(val))/1023)*100
-        strLum = str(lum).split(".")
-        data.sensorData["luminosite"]=strLum[0]+"."+strLum[1][:1]
+        print(val)
+        data.sensorData["luminosite"]=val
+
         print("luminosite: {}".format(data.sensorData["luminosite"]))
         
         # Fermer la connexion série
@@ -108,7 +106,7 @@ class Reader(object):
             raise error
     
     def readTemp (self):
-        #temp_c = sensor.get_temperature()
+        temp_c = sensor.get_temperature()
         
         def read_temp_raw():
             f = open(device_file, 'r')
@@ -126,7 +124,6 @@ class Reader(object):
             temp_c = float(temp_string) / 1000.0
             data.sensorData["temperature"] = int(temp_c) #we get the temperature
             # temp_f = temp_c * 9.0 / 5.0 + 32.0
-            print(temp_c)
             
     
     def readAirQuality(self):

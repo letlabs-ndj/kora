@@ -1,10 +1,14 @@
 {
-    "temperature": 26,
-    "humiditeSol": 0,
-    "humiditeAir": 6,    
-    "ph": 0,
-    "luminosite": 0,
-    "sprinkler_status": true,
-    "fan_status": false,
-    "user_serre":"letlabs"
+    "id": 19,
+    "url": "http://koraapi.alwaysdata.net/apps/serre/19/",
+    "temperature": "0.00",
+    "humiditeSol": "0.00",
+    "humiditeAir": "0.00",
+    "ph": "0.00",
+    "luminosite": "0.00",
+    "ventilateur": false,
+    "arroseur": false,
+    "lumiere": false,
+    "token": "411f6f607221459f9b73c711fc7407a9",
+    "user_serre": null
 }

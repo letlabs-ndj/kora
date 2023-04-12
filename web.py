@@ -1,46 +1,58 @@
-import requests
+import websocket
+import rel
+from time import sleep
 import json
-import time
+import requests
+import os
 import data
-from Controlleur import Controlleur
 
 
-val = data.getGHState('data/identification.json')        
-numero_serre = val['numero_serre']
-
-def getCommands():
+def createAccount():
     try:
-        response = requests.get('https://koraapi.alwaysdata.net/api/v1/com/3',
-        headers={'Accept': 'application/json'})
+        with open("account.json",'r') as state_file:
+            state = json.load(state_file)
+
+        dictionary = {}
+        data = json.dumps(dictionary)
+        response = requests.post('https://koraapi.alwaysdata.net/api/v1/serre/',data=data,
+        headers={'Content-Type':'application/json'},timeout=5)
         print(f"Status Code: {response.status_code}, Content: {response.json()}")
 
-        cmds = json.dumps(response.json(),indent=4)
-        with open("data/commands.json","w") as cmds_file:
-                cmds_file.write(cmds)
-    except:
-        pass
-    
+        id = json.dumps(response.json(),indent=4)
+        with open("data/info.json","w") as id_file:
+                id_file.write(id)
+
+    except requests.ConnectionError:
+        print("Pas de connexion internet disponible")
 
 def sendGHState():
     try:
+        val = data.getGHState('data/GHState.json')
+        id=str(val["id"])
         with open("data/GHState.json",'r') as state_file:
-                state = json.load(state_file)
+            state = json.load(state_file)
 
-        data = json.dumps(state)
-        headers={'Content-Type':'application/json','Accept': 'text/plain'}
+        params = json.dumps(state)
+        response = requests.put("https://koraapi.alwaysdata.net/apps/serre/"+id+"/",data=params,
+        headers={'Content-Type':'application/json'},timeout=5)
+        print(response.json())
 
-        response = requests.put('https://koraapi.alwaysdata.net/api/v1/serre/',data=data,headers=headers)
-    except:
-        pass
-    
+        params = json.dumps(response.json(),indent=4)
+        with open("data/GHState.json","w") as param_file:
+                param_file.write(params)
+
+    except requests.ConnectionError:
+        print("Pas de connexion internet disponible")
+
+
+
+headers={'Content-Type':'application/json'}
+
 if __name__ == "__main__":
-    ctrl = Controlleur()
-    while True:              
-        start = time.time()
-        
-        while (time.time()-start) <= 3:
-            getCommands()
-            ctrl.execute()
-            print(time.time()-start,"sec")
-            
+    while os.stat('data/GHState.json').st_size == 0:
+        print('The file is empty')
+        createAccount()
+
+    while True:
         sendGHState()
+        sleep(2)
