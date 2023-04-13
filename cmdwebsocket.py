@@ -4,18 +4,26 @@ import json
 import os
 import data
 from web import createAccount
+from gui import openDialog
 #from Controlleur import Controlleur
 
 # ctrl = Controlleur()
+
 val = data.getGHState('data/GHState.json')
 token=val["token"]
+
 def on_message(ws, message):
     print("Received message : "+message)
-    data = json.loads(message)
-    cmds = json.dumps(data,indent=4)
-    with open("new.json","w") as cmds_file:
-        cmds_file.write(cmds)
-
+    msg = json.loads(message)
+    text = msg["text"]
+    print(text)
+    if text["type"]=="Serre Connection": 
+        print("srr")
+        sc=json.dumps(text,indent=4)        
+        with open("data/serreConnect.json","w") as sc_file:
+            sc_file.write(sc)
+    elif text["type"]=="Change Propertie":
+        print("change")
 
 def on_error(ws, error):
     print(error)

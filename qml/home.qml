@@ -10,9 +10,10 @@ import QtWebSockets 1.0
 Item {
 
     property string currTime:"0"
-    property string token:"0"
     Material.theme: Material.light
     Material.accent: "#367E18"
+    property string email:""
+    property string userTok:""
     
  
     StackView {
@@ -99,17 +100,27 @@ Item {
                             id: socket
                             url: "ws://koraapi.alwaysdata.net/ws/serre/"+token+"/"
                             onTextMessageReceived: {
-                                data = JSON.parse(message)
-                                console.log(data)
-                                messageDialog.open()
+                                console.log(message) 
+                                 
+                                if(message.includes("Serre Connection")){
+                                    console.log("SR")
+                                    messageDialog.open()
+                                }
+                                else if(message.includes("Change Propertie")){
+                                    console.log("CP")
+                                }
+                                else{
+                                    console.log("none")
+                                }  
+
+                                
                             }
                             onStatusChanged: if (socket.status == WebSocket.Error) {
-                                                console.log("Error: " + socket.errorString)
+                                                console.log("Error: " + socket.errorString+ "token"+tok)
                                             } else if (socket.status == WebSocket.Open) {
-                                                console.log("socket opened")
-                                                socket.sendTextMessage("yeah")
+                                                console.log("socket opened")                                                
                                             } else if (socket.status == WebSocket.Closed) {
-                                                messageBox.text += "\nSocket closed"
+                                                console.log("Socket closed")
                                             }
                             active: false
                         }
@@ -145,8 +156,8 @@ Item {
                             Dialog {
                                 id: messageDialog
                                 width:400
-                                x: -(parent.width/3) 
-                                y:  parent.height/3
+                                x: -Screen.width/2 - 200
+                                y:  Screen.height/6 
 
 
                                 background:Rectangle {
@@ -186,6 +197,7 @@ Item {
                                     }
                                     
                                     TextField {
+                                        id:distAuth
                                         placeholderText: "Password"
                                         echoMode: TextInput.Password
                                         color:"white"
@@ -218,7 +230,22 @@ Item {
                                                 text:"Valider"                                    
                                         }
                                             onClicked:{
-                                                socket.sendTextMessage(qsTr("OK"))
+                                                pass =  gui.login(distAuth.text)
+                                                email = gui.getUserEmail()
+                                                userTok=gui.getUserTok()  
+                                                if (pass){                                                    
+                                                    var object = {"type":"Accept Request","user":userTok,"token":token}
+                                                    var json = JSON.stringify(object)
+                                                    socket.sendTextMessage(json)
+                                                    console.log("Sent JSON:", json)
+                                                    
+                                                }else{
+                                                    var object = {"type":"Refuse Request","user":userTok,"token":token}
+                                                    var json = JSON.stringify(object)
+                                                    socket.sendTextMessage(json)
+                                                    console.log("Sent JSON:", json)                                                    
+                                                    
+                                                }
                                                 messageDialog.close()
                                                 }
                                         }
@@ -234,7 +261,9 @@ Item {
                                                 text:"Annuler"  
                                                 color:"white"                                  
                                         }
-                                        onClicked: messageDialog.close()
+                                        onClicked: {                                            
+                                            messageDialog.close()
+                                            }
                                         }
 
                                     }
@@ -258,6 +287,9 @@ Item {
                 target: backend
                 function onPrintTime(time){
                     time_txt.text = time
+                }
+                function onDistantUser(email){
+                    console.log(email)
                 }
             }
         }
