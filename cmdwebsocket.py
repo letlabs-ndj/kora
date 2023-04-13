@@ -15,15 +15,15 @@ token=val["token"]
 def on_message(ws, message):
     print("Received message : "+message)
     msg = json.loads(message)
-    text = msg["text"]
+    text = msg["text"]["type"]
     print(text)
-    if text["type"]=="Serre Connection": 
-        print("srr")
-        sc=json.dumps(text,indent=4)        
-        with open("data/serreConnect.json","w") as sc_file:
+    if text=="Serre Connection":   
+        sc=json.dumps(text['text'],indent=4)    
+        with open("serreConnect.json","w") as sc_file:
             sc_file.write(sc)
-    elif text["type"]=="Change Propertie":
+    elif text=="Change Propertie":
         print("change")
+        
 
 def on_error(ws, error):
     print(error)
