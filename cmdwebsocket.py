@@ -22,6 +22,7 @@ def on_message(ws, message):
             sc_file.write(sc)
     elif text=="Change Propertie":
         print("change")
+        #ctrl.execute(msg['text']['data']['parametre'],msg['text']['data']['valeur'])
         
 
 def on_error(ws, error):

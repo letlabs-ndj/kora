@@ -233,13 +233,13 @@ Item {
                                                 email = gui.getUserEmail()
                                                 userTok=gui.getUserTok()  
                                                 if (pass){                                                    
-                                                    var object = {"type":"Accept Request","user":userTok,"token":token}
+                                                    var object = {"type":"Accept Request","user":userTok,"serre":token}
                                                     var json = JSON.stringify(object)
                                                     socket.sendTextMessage(json)
                                                     console.log("Sent JSON:", json)
                                                     
                                                 }else{
-                                                    var object = {"type":"Refuse Request","user":userTok,"token":token}
+                                                    var object = {"type":"Refuse Request","user":userTok,"serre":token}
                                                     var json = JSON.stringify(object)
                                                     socket.sendTextMessage(json)
                                                     console.log("Sent JSON:", json)                                                    
