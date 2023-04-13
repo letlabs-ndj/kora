@@ -10,6 +10,7 @@ from time import strftime, localtime
 # from Controlleur import Controlleur
 import data
 import qrcode
+from cmdwebsocket import token
 import koraresource
 
 # ctrl = Controlleur()
@@ -142,13 +143,13 @@ class Gui (QObject):
     def setTime(self):
         now = datetime.datetime.now()
         formatDate = now.strftime("%H:%M:%S")
-        print(formatDate)
         self.printTime.emit(formatDate)
 
 
 if __name__== "__main__":
+    tok = token
     # generating a QR code using the make() function  
-    qr_img = qrcode.make("letlabs")  
+    qr_img = qrcode.make(tok)  
     # saving the image file  
     qr_img.save("assets/images/qr-img.jpg") 
     app = QGuiApplication(sys.argv)

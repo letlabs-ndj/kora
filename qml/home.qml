@@ -148,8 +148,7 @@ Item {
                                 
                             }
                             onClicked: {
-                                qrDialog.open()
-                                socket.sendTextMessage("let")
+                                qrDialog.open()                                
                                 }
 
 

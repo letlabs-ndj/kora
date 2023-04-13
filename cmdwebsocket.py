@@ -4,7 +4,6 @@ import json
 import os
 import data
 from web import createAccount
-from gui import openDialog
 #from Controlleur import Controlleur
 
 # ctrl = Controlleur()
@@ -18,8 +17,8 @@ def on_message(ws, message):
     text = msg["text"]["type"]
     print(text)
     if text=="Serre Connection":   
-        sc=json.dumps(text['text'],indent=4)    
-        with open("serreConnect.json","w") as sc_file:
+        sc=json.dumps(msg['text'],indent=4)    
+        with open("data/serreConnect.json","w") as sc_file:
             sc_file.write(sc)
     elif text=="Change Propertie":
         print("change")
